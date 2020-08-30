@@ -1,0 +1,49 @@
+version: '3.7'
+services:
+  books-info-service:
+    build:
+      context: books-info-service
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    restart: always
+    depends_on:
+      - eureka-naming-server
+    networks:
+      - book-application-network
+  books-rating-service:
+    build:
+      context: books-rating-service
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    restart: always
+    depends_on: 
+      - eureka-naming-server
+      - books-info-service 
+    networks:
+      - book-application-network
+  books-catalog-service:
+    build:
+      context: books-catalog-service
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    restart: always
+    depends_on: 
+      - eureka-naming-server
+      - books-rating-service 
+    networks:
+      - book-application-network
+  eureka-naming-server:
+    build:
+      context: eureka-naming-server
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+    restart: always
+    networks:
+      - book-application-network
+  
+networks:
+  book-application-network:
